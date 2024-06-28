@@ -25,10 +25,11 @@ public class #name# {
     public static class StaticBench extends MicroBench {
         static final Object base = offsets.staticFieldBase;
         static final long offset = offsets.staticFieldOffset;
+        #Type# array[] = new #Type#[256];
         protected long doBatch(long numIterations) {
             long i;
             for (i = 0; i < numIterations; i++)
-                UNSAFE.get#type##mode#(base, offset);
+                array[(int) i % 256] = UNSAFE.get#type##mode#(base, offset);
             return i;
         }
     }
@@ -36,22 +37,23 @@ public class #name# {
     public static class FieldBench extends MicroBench {
         static final Object base = new UnsafeTestData.TestObject();
         static final long offset = offsets.fieldOffset;
+        #Type# array[] = new #Type#[256];
         protected long doBatch(long numIterations) {
             long i;
             for (i = 0; i < numIterations; i++)
-                UNSAFE.get#type##mode#(base, offset);
+                array[(int) i % 256] = UNSAFE.get#type##mode#(base, offset);
             return i;
         }
     }
 
     public static class ArrayBench extends MicroBench {
-        static final #Type# array[] = new #Type#[256];
+        #Type# array[] = new #Type#[256];
         static final int shift = offsets.arrayShift;
         static final int offset = offsets.arrayOffset;
         protected long doBatch(long numIterations) {
             long i;
             for (i = 0; i < numIterations; i++)
-                UNSAFE.get#type##mode#(array, ((i % 256) << shift) + offset);
+                array[(int) i % 256] = UNSAFE.get#type##mode#(array, ((i % 256) << shift) + offset);
             return i;
         }
     }
