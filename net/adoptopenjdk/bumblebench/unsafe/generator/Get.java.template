@@ -22,27 +22,59 @@ public class #name# {
     static final Unsafe UNSAFE = UnsafeTestData.UNSAFE;
     static final UnsafeTestData.Offsets offsets = UnsafeTestData.#ltype#Offsets;
 
-    public static class StaticBench extends MicroBench {
-        static final Object base = offsets.staticFieldBase;
-        static final long offset = offsets.staticFieldOffset;
-        #Type# array[] = new #Type#[256];
+    static abstract class AbstractBench extends MicroBench {
+        private final Object base0;
+        private final Object base1;
+        private final long offset0;
+        private final long offset1;
+        public #Type# val0, val1;
+
+        protected AbstractBench(Object b0, Object b1, long o0, long o1) {
+            base0 = b0;
+            base1 = b1;
+            offset0 = o0;
+            offset1 = o1;
+        }
+
         protected long doBatch(long numIterations) {
+            Object base;
+            long offset;
+            int rand = 42;
             long i;
-            for (i = 0; i < numIterations; i++)
-                array[(int) i % 256] = UNSAFE.get#type##mode#(base, offset);
+            for (i = 0; i < numIterations; i++) {
+                rand ^= rand << 23;
+                rand ^= rand >> 7;
+                if ((rand&1) == 0) {
+                    base = base0;
+                } else {
+                    base = base1;
+                }
+
+                if ((rand&2) == 0) {
+                    offset = offset0;
+                } else {
+                    offset = offset1;
+                }
+
+                if ((rand&4) == 0) {
+                    val0 = UNSAFE.get#type##mode#(base, offset);
+                } else {
+                    val1 = UNSAFE.get#type##mode#(base, offset);
+                }
+            }
             return i;
         }
     }
 
-    public static class FieldBench extends MicroBench {
-        static final Object base = new UnsafeTestData.TestObject();
-        static final long offset = offsets.fieldOffset;
-        #Type# array[] = new #Type#[256];
-        protected long doBatch(long numIterations) {
-            long i;
-            for (i = 0; i < numIterations; i++)
-                array[(int) i % 256] = UNSAFE.get#type##mode#(base, offset);
-            return i;
+    public static class StaticBench extends AbstractBench {
+        public StaticBench() {
+            super(offsets.staticFieldBase0, offsets.staticFieldBase1, offsets.staticFieldOffset0, offsets.staticFieldOffset1);
+        }
+    }
+
+    public static class FieldBench extends AbstractBench {
+        public FieldBench() {
+            super(new UnsafeTestData.TestObject(), new UnsafeTestData.TestObject(), offsets.fieldOffset0, offsets.fieldOffset1);
         }
     }
 

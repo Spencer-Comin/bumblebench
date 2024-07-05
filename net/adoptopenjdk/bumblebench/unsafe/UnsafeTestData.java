@@ -42,19 +42,22 @@ public class UnsafeTestData {
     }
 
     public static class Offsets {
-        public final Object staticFieldBase;
-        public final long staticFieldOffset;
-        public final long fieldOffset;
+        public final Object staticFieldBase0, staticFieldBase1;
+        public final long staticFieldOffset0, staticFieldOffset1;
+        public final long fieldOffset0, fieldOffset1;
         public final int arrayOffset;
         public final int arrayShift;
 
         public Offsets(Unsafe UNSAFE, String fieldName, Class<?> arrayClass) throws NoSuchFieldException {
             Field staticField = TestObject.class.getDeclaredField("STATIC_"+fieldName);
-            staticFieldBase = UNSAFE.staticFieldBase(staticField);
-            staticFieldOffset = UNSAFE.staticFieldOffset(staticField);
+            staticFieldBase0 = UNSAFE.staticFieldBase(staticField);
+            staticFieldOffset0 = UNSAFE.staticFieldOffset(staticField);
+            staticFieldBase1 = staticFieldBase0;
+            staticFieldOffset1 = staticFieldOffset0;
 
             Field field = TestObject.class.getDeclaredField(fieldName);
-            fieldOffset = UNSAFE.objectFieldOffset(field);
+            fieldOffset0 = UNSAFE.objectFieldOffset(field);
+            fieldOffset1 = fieldOffset0;
 
             arrayOffset = UNSAFE.arrayBaseOffset(arrayClass);
             int ascale = UNSAFE.arrayIndexScale(arrayClass);
