@@ -15,83 +15,35 @@
 package net.adoptopenjdk.bumblebench.unsafe;
 
 import net.adoptopenjdk.bumblebench.core.MicroBench;
-import net.adoptopenjdk.bumblebench.unsafe.UnsafeTestData;
 import jdk.internal.misc.Unsafe;
 
-public class #name# {
+public class #name# extends MicroBench {
     static final Unsafe UNSAFE = UnsafeTestData.UNSAFE;
-    static final UnsafeTestData.Offsets offsets = UnsafeTestData.#ltype#Offsets;
-    static final #Type# val0 = #init#;
-    static final #Type# val1 = #init#;
+    static final #Type# val = #init#;
+    static final #Type# array[] = new #Type#[256];
 
-    private static abstract class AbstractBench extends MicroBench {
-        private final Object base0;
-        private final Object base1;
-        private final long offset0;
-        private final long offset1;
+    static final int shift;
+    static final int offset;
 
-        protected AbstractBench(Object b0, Object b1, long o0, long o1) {
-            base0 = b0;
-            base1 = b1;
-            offset0 = o0;
-            offset1 = o1;
-        }
-
-        protected long doBatch(long numIterations) {
-            Object base;
-            long offset;
-            #Type# val;
-            int rand = 42;
-            long i;
-            for (i = 0; i < numIterations; i++) {
-                rand ^= rand << 23;
-                rand ^= rand >> 7;
-                if ((rand&1) == 0) {
-                    base = base0;
-                } else {
-                    base = base1;
-                }
-
-                if ((rand&2) == 0) {
-                    offset = offset0;
-                } else {
-                    offset = offset1;
-                }
-
-                if ((rand&4) == 0) {
-                    val = val0;
-                } else {
-                    val = val1;
-                }
-
-                UNSAFE.put#type##mode#(base, offset, val);
-            }
-
-            return i;
-        }
+    static {
+        offset = UNSAFE.arrayBaseOffset(#Type#[].class);
+        int ascale = UNSAFE.arrayIndexScale(#Type#[].class);
+        shift = 31 - Integer.numberOfLeadingZeros(ascale);
     }
 
-    public static class StaticBench extends AbstractBench {
-        public StaticBench() {
-            super(offsets.staticFieldBase0, offsets.staticFieldBase1, offsets.staticFieldOffset0, offsets.staticFieldOffset1);
-        }
-    }
+    protected long doBatch(long numIterations) {
+        long i;
 
-    public static class FieldBench extends AbstractBench {
-        public FieldBench() {
-            super(new UnsafeTestData.TestObject(), new UnsafeTestData.TestObject(), offsets.fieldOffset0, offsets.fieldOffset1);
-        }
-    }
+        // cache everything before the loop so there aren't any loads in the loop
+        Object b = array;
+        int o = offset;
+        int s = shift;
+        Unsafe u = UNSAFE;
+        #Type# v = val;
 
-    public static class ArrayBench extends MicroBench {
-        static final #Type# array[] = new #Type#[256];
-        static final int shift = offsets.arrayShift;
-        static final int offset = offsets.arrayOffset;
-        protected long doBatch(long numIterations) {
-            long i;
-            for (i = 0; i < numIterations; i++)
-                UNSAFE.put#type##mode#(array, ((i % 256) << shift) + offset, val0);
-            return i;
-        }
+        for (i = 0; i < numIterations; i++)
+            u.put#type##mode#(b, ((i % 256) << s) + o, v);
+
+        return i;
     }
 }

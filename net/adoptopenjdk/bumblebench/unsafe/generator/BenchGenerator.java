@@ -48,7 +48,6 @@ public class BenchGenerator extends Task {
         public String populateTemplate(String template) {
             return template.replaceAll("#name#", getName())
                            .replaceAll("#type#", inlinetype)
-                           .replaceAll("#ltype#", inlinetype.toLowerCase())
                            .replaceAll("#Type#", type)
                            .replaceAll("#mode#", mode)
                            .replaceAll("#init#", init)
