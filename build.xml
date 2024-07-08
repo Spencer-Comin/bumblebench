@@ -98,48 +98,48 @@ execute a build.
         </unsafegenerate>
         <unsafegenerate prefix="Get" template="${src-unsafe-generator}/Get.java.template" outputdir="${src-unsafe}">
             <!-- plain gets -->
-            <blueprint type="Object" inlinetype="Reference"/>
+            <blueprint type="Object" inlinetype="Reference" asLong="System.identityHashCode"/>
             <blueprint type="int" inlinetype="Int"/>
-            <blueprint type="boolean" inlinetype="Boolean"/>
+            <blueprint type="boolean" inlinetype="Boolean" asLong="boolToLong"/>
             <blueprint type="byte" inlinetype="Byte"/>
             <blueprint type="short" inlinetype="Short"/>
             <blueprint type="char" inlinetype="Char"/>
             <blueprint type="long" inlinetype="Long"/>
-            <blueprint type="float" inlinetype="Float"/>
-            <blueprint type="double" inlinetype="Double"/>
+            <blueprint type="float" inlinetype="Float" asLong="Float.floatToRawIntBits"/>
+            <blueprint type="double" inlinetype="Double" asLong="Double.doubleToRawLongBits"/>
 
             <!-- volatile gets -->
-            <blueprint type="Object" inlinetype="Reference" mode="Volatile"/>
+            <blueprint type="Object" inlinetype="Reference" mode="Volatile" asLong="System.identityHashCode"/>
             <blueprint type="int" inlinetype="Int" mode="Volatile"/>
-            <blueprint type="boolean" inlinetype="Boolean" mode="Volatile"/>
+            <blueprint type="boolean" inlinetype="Boolean" mode="Volatile" asLong="boolToLong"/>
             <blueprint type="byte" inlinetype="Byte" mode="Volatile"/>
             <blueprint type="short" inlinetype="Short" mode="Volatile"/>
             <blueprint type="char" inlinetype="Char" mode="Volatile"/>
             <blueprint type="long" inlinetype="Long" mode="Volatile"/>
-            <blueprint type="float" inlinetype="Float" mode="Volatile"/>
-            <blueprint type="double" inlinetype="Double" mode="Volatile"/>
+            <blueprint type="float" inlinetype="Float" mode="Volatile" asLong="Float.floatToRawIntBits"/>
+            <blueprint type="double" inlinetype="Double" mode="Volatile" asLong="Double.doubleToRawLongBits"/>
 
             <!-- acquire gets -->
-            <blueprint type="Object" inlinetype="Reference" mode="Acquire"/>
+            <blueprint type="Object" inlinetype="Reference" mode="Acquire" asLong="System.identityHashCode"/>
             <blueprint type="int" inlinetype="Int" mode="Acquire"/>
-            <blueprint type="boolean" inlinetype="Boolean" mode="Acquire"/>
+            <blueprint type="boolean" inlinetype="Boolean" mode="Acquire" asLong="boolToLong"/>
             <blueprint type="byte" inlinetype="Byte" mode="Acquire"/>
             <blueprint type="short" inlinetype="Short" mode="Acquire"/>
             <blueprint type="char" inlinetype="Char" mode="Acquire"/>
             <blueprint type="long" inlinetype="Long" mode="Acquire"/>
-            <blueprint type="float" inlinetype="Float" mode="Acquire"/>
-            <blueprint type="double" inlinetype="Double" mode="Acquire"/>
+            <blueprint type="float" inlinetype="Float" mode="Acquire" asLong="Float.floatToRawIntBits"/>
+            <blueprint type="double" inlinetype="Double" mode="Acquire" asLong="Double.doubleToRawLongBits"/>
 
             <!-- opaque gets -->
-            <blueprint type="Object" inlinetype="Reference" mode="Opaque"/>
+            <blueprint type="Object" inlinetype="Reference" mode="Opaque" asLong="System.identityHashCode"/>
             <blueprint type="int" inlinetype="Int" mode="Opaque"/>
-            <blueprint type="boolean" inlinetype="Boolean" mode="Opaque"/>
+            <blueprint type="boolean" inlinetype="Boolean" mode="Opaque" asLong="boolToLong"/>
             <blueprint type="byte" inlinetype="Byte" mode="Opaque"/>
             <blueprint type="short" inlinetype="Short" mode="Opaque"/>
             <blueprint type="char" inlinetype="Char" mode="Opaque"/>
             <blueprint type="long" inlinetype="Long" mode="Opaque"/>
-            <blueprint type="float" inlinetype="Float" mode="Opaque"/>
-            <blueprint type="double" inlinetype="Double" mode="Opaque"/>
+            <blueprint type="float" inlinetype="Float" mode="Opaque" asLong="Float.floatToRawIntBits"/>
+            <blueprint type="double" inlinetype="Double" mode="Opaque" asLong="Double.doubleToRawLongBits"/>
         </unsafegenerate>
     </target>
 

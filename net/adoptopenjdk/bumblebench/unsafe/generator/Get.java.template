@@ -27,7 +27,7 @@ public class #name# {
         private final Object base1;
         private final long offset0;
         private final long offset1;
-        public #Type# val0, val1;
+        public long dump;
 
         protected AbstractBench(Object b0, Object b1, long o0, long o1) {
             base0 = b0;
@@ -36,32 +36,23 @@ public class #name# {
             offset1 = o1;
         }
 
+        private long boolToLong(boolean b) { return b ? 1 : 0; }
+
         protected long doBatch(long numIterations) {
-            Object base;
-            long offset;
-            int rand = 42;
+            Object base, cacheBase0=base0, cacheBase1=base1;
+            long offset, cacheOffset0=offset0, cacheOffset1=offset1;
+            #Type# val;
+            long acc = 42;
             long i;
             for (i = 0; i < numIterations; i++) {
-                rand ^= rand << 23;
-                rand ^= rand >> 7;
-                if ((rand&1) == 0) {
-                    base = base0;
-                } else {
-                    base = base1;
-                }
+                acc ^= acc << 23;
+                base = ((acc&1) == 0) ? cacheBase0 : cacheBase1;
+                offset = ((acc&2) == 0) ? cacheOffset0 : cacheOffset1;
 
-                if ((rand&2) == 0) {
-                    offset = offset0;
-                } else {
-                    offset = offset1;
-                }
-
-                if ((rand&4) == 0) {
-                    val0 = UNSAFE.get#type##mode#(base, offset);
-                } else {
-                    val1 = UNSAFE.get#type##mode#(base, offset);
-                }
+                val = UNSAFE.get#type##mode#(base, offset);
+                acc |= #asLong#(val);
             }
+            dump = acc;
             return i;
         }
     }

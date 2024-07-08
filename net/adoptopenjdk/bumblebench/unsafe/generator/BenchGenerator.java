@@ -36,12 +36,13 @@ public class BenchGenerator extends Task {
     public void setPrefix(String pfx) { prefix=pfx; }
 
     public class Blueprint {
-        String mod="", type="", inlinetype="", init="", mode="";
+        String mod="", type="", inlinetype="", init="", mode="", asLong="";
 
         public void setMode(String m) { mode=m; }
         public void setType(String ty) { type=ty; }
         public void setInlinetype(String ity) { inlinetype=ity; }
         public void setInit(String i) { init=i; }
+        public void setAsLong(String s) { asLong=s; }
         public String getName() { return prefix + inlinetype + mode + "Bench"; }
 
         public String populateTemplate(String template) {
@@ -50,7 +51,8 @@ public class BenchGenerator extends Task {
                            .replaceAll("#ltype#", inlinetype.toLowerCase())
                            .replaceAll("#Type#", type)
                            .replaceAll("#mode#", mode)
-                           .replaceAll("#init#", init);
+                           .replaceAll("#init#", init)
+                           .replaceAll("#asLong#", asLong);
         }
     }
 
