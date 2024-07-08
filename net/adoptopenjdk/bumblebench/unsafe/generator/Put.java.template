@@ -16,9 +16,11 @@ package net.adoptopenjdk.bumblebench.unsafe;
 
 import net.adoptopenjdk.bumblebench.core.MicroBench;
 import jdk.internal.misc.Unsafe;
+import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 
 public class #name# extends MicroBench {
-    static final Unsafe UNSAFE = UnsafeTestData.UNSAFE;
+    static final Unsafe UNSAFE;
     static final #Type# val = #init#;
     static final #Type# array[] = new #Type#[256];
 
@@ -26,6 +28,20 @@ public class #name# extends MicroBench {
     static final int offset;
 
     static {
+        try {
+            Field f = Unsafe.class.getDeclaredField("theUnsafe");
+            f.setAccessible(true);
+            UNSAFE = (Unsafe) f.get(null);
+        } catch (IllegalAccessError e) {
+            System.err.println("add \"--add-exports java.base/jdk.internal.misc=ALL-UNNAMED\" to your java command");
+            throw new RuntimeException("Unable to get Unsafe instance.", e);
+        } catch (InaccessibleObjectException e) {
+            System.err.println("add \"--add-opens java.base/jdk.internal.misc=ALL-UNNAMED\" to your java command");
+            throw new RuntimeException("Unable to get Unsafe instance.", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get Unsafe instance.", e);
+        }
+
         offset = UNSAFE.arrayBaseOffset(#Type#[].class);
         int ascale = UNSAFE.arrayIndexScale(#Type#[].class);
         shift = 31 - Integer.numberOfLeadingZeros(ascale);
