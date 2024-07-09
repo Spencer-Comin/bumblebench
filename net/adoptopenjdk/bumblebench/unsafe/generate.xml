@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+	    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+This is a build.xml which executes the main openjdk.build build.xml
+to allow tools which invoke a root level build.xml file to
+execute a build.
+-->
+
+<project name="net.adoptopenjdk.bumblebench.unsafe" basedir="." default="benchmarks">
+    <dirname property="dir" file="${ant.file.net.adoptopenjdk.bumblebench.unsafe}"/>
+
+    <target name="generate-get-benchmark" description="generate an unsafe get benchmark">
+        <exec executable="gcc" failonerror="true" input="${dir}/templates/Get.java.template" output="${dir}/Get${type-mode}Bench.java">
+            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -"/>
+        </exec>
+    </target>
+
+    <target name="generate-put-benchmark" description="generate an unsafe put benchmark">
+        <exec executable="gcc" failonerror="true" input="${dir}/templates/Put.java.template" output="${dir}/Put${type-mode}Bench.java">
+            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -"/>
+        </exec>
+    </target>
+
+    <target name="get-benchmarks">
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="Object"/>
+            <param name="type-mode" value="Reference${mode}"/>
+            <param name="update-acc" value="acc += (val)==null ? 1 : 0"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="int"/>
+            <param name="type-mode" value="Int${mode}"/>
+            <param name="update-acc" value="acc += val"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="boolean"/>
+            <param name="type-mode" value="Boolean${mode}"/>
+            <param name="update-acc" value="acc += (val) ? 1 : 0"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="byte"/>
+            <param name="type-mode" value="Byte${mode}"/>
+            <param name="update-acc" value="acc += val"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="short"/>
+            <param name="type-mode" value="Short${mode}"/>
+            <param name="update-acc" value="acc += val"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="char"/>
+            <param name="type-mode" value="Char${mode}"/>
+            <param name="update-acc" value="acc += val"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="long"/>
+            <param name="type-mode" value="Long${mode}"/>
+            <param name="update-acc" value="acc += val"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="float"/>
+            <param name="type-mode" value="Float${mode}"/>
+            <param name="update-acc" value="acc += Float.floatToRawIntBits(val)"/>
+        </antcall>
+        <antcall target="generate-get-benchmark">
+            <param name="type" value="double"/>
+            <param name="type-mode" value="Double${mode}"/>
+            <param name="update-acc" value="acc += Double.doubleToRawLongBits(val)"/>
+        </antcall>
+    </target>
+
+    <target name="put-benchmarks">
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="Object"/>
+            <param name="type-mode" value="Reference${mode}"/>
+            <param name="init" value="new Object()"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="int"/>
+            <param name="type-mode" value="Int${mode}"/>
+            <param name="init" value="85"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="boolean"/>
+            <param name="type-mode" value="Boolean${mode}"/>
+            <param name="init" value="true"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="byte"/>
+            <param name="type-mode" value="Byte${mode}"/>
+            <param name="init" value="0x17"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="short"/>
+            <param name="type-mode" value="Short${mode}"/>
+            <param name="init" value="17"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="char"/>
+            <param name="type-mode" value="Char${mode}"/>
+            <param name="init" value="99"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="long"/>
+            <param name="type-mode" value="Long${mode}"/>
+            <param name="init" value="42"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="float"/>
+            <param name="type-mode" value="Float${mode}"/>
+            <param name="init" value="1.0f"/>
+        </antcall>
+        <antcall target="generate-put-benchmark">
+            <param name="type" value="double"/>
+            <param name="type-mode" value="Double${mode}"/>
+            <param name="init" value="1.0d"/>
+        </antcall>
+    </target>
+
+    <target name="benchmarks">
+        <!-- gets -->
+        <antcall target="get-benchmarks">
+            <param name="mode" value=""/>
+        </antcall>
+        <antcall target="get-benchmarks">
+            <param name="mode" value="Volatile"/>
+        </antcall>
+        <antcall target="get-benchmarks">
+            <param name="mode" value="Acquire"/>
+        </antcall>
+        <antcall target="get-benchmarks">
+            <param name="mode" value="Opaque"/>
+        </antcall>
+
+        <!-- puts -->
+        <antcall target="put-benchmarks">
+            <param name="mode" value=""/>
+        </antcall>
+        <antcall target="put-benchmarks">
+            <param name="mode" value="Volatile"/>
+        </antcall>
+        <antcall target="put-benchmarks">
+            <param name="mode" value="Release"/>
+        </antcall>
+        <antcall target="put-benchmarks">
+            <param name="mode" value="Opaque"/>
+        </antcall>
+    </target>
+</project>

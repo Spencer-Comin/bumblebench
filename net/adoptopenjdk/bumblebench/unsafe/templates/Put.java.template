@@ -12,6 +12,14 @@
 * limitations under the License.
 *******************************************************************************/
 
+#define NAME__(tm) Put ## tm ## Bench
+#define NAME_(tm) NAME__(tm)
+#define NAME NAME_(TYPEMODE)
+
+#define OP__(tm) put ## tm
+#define OP_(tm) OP__(tm)
+#define OP OP_(TYPEMODE)
+
 package net.adoptopenjdk.bumblebench.unsafe;
 
 import net.adoptopenjdk.bumblebench.core.MicroBench;
@@ -19,10 +27,10 @@ import jdk.internal.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 
-public class #name# extends MicroBench {
+public class NAME extends MicroBench {
     static final Unsafe UNSAFE;
-    static final #Type# val = #init#;
-    static final #Type# array[] = new #Type#[256];
+    static final TYPE val = INIT;
+    static final TYPE array[] = new TYPE[256];
 
     static final int shift;
     static final int offset;
@@ -42,8 +50,8 @@ public class #name# extends MicroBench {
             throw new RuntimeException("Unable to get Unsafe instance.", e);
         }
 
-        offset = UNSAFE.arrayBaseOffset(#Type#[].class);
-        int ascale = UNSAFE.arrayIndexScale(#Type#[].class);
+        offset = UNSAFE.arrayBaseOffset(TYPE[].class);
+        int ascale = UNSAFE.arrayIndexScale(TYPE[].class);
         shift = 31 - Integer.numberOfLeadingZeros(ascale);
     }
 
@@ -55,10 +63,10 @@ public class #name# extends MicroBench {
         int o = offset;
         int s = shift;
         Unsafe u = UNSAFE;
-        #Type# v = val;
+        TYPE v = val;
 
         for (i = 0; i < numIterations; i++)
-            u.put#type##mode#(b, ((i % 256) << s) + o, v);
+            u.OP(b, ((i % 256) << s) + o, v);
 
         return i;
     }
