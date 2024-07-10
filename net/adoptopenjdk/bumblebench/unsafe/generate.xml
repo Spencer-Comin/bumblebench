@@ -16,16 +16,16 @@ execute a build.
 -->
 
 <project name="net.adoptopenjdk.bumblebench.unsafe" basedir="." default="benchmarks">
-    <dirname property="dir" file="${ant.file.net.adoptopenjdk.bumblebench.unsafe}"/>
+    <dirname property="unsafe-dir" file="${ant.file.net.adoptopenjdk.bumblebench.unsafe}"/>
 
     <target name="generate-get-benchmark" description="generate an unsafe get benchmark">
-        <exec executable="gcc" failonerror="true" input="${dir}/templates/Get.java.template" output="${dir}/Get${type-mode}Bench.java">
+        <exec executable="gcc" failonerror="true" input="${unsafe-dir}/templates/Get.java.template" output="${unsafe-dir}/Get${type-mode}Bench.java">
             <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -"/>
         </exec>
     </target>
 
     <target name="generate-put-benchmark" description="generate an unsafe put benchmark">
-        <exec executable="gcc" failonerror="true" input="${dir}/templates/Put.java.template" output="${dir}/Put${type-mode}Bench.java">
+        <exec executable="gcc" failonerror="true" input="${unsafe-dir}/templates/Put.java.template" output="${unsafe-dir}/Put${type-mode}Bench.java">
             <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -"/>
         </exec>
     </target>
