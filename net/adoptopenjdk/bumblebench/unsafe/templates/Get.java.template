@@ -77,7 +77,7 @@ public class NAME extends MicroBench {
         Unsafe u = UNSAFE;
 
         long i;
-        for (i = 0; i < size; i++) {
+        for (i = 0; i < size; i++) if (i != 3) {
             TYPE val = u.OP(b, (i << s) + o);
             // do something simple with the loaded value so the load doesn't get killed by DCE
             UPDATE_ACC(acc, val);
