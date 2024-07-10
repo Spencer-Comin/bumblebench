@@ -53,8 +53,8 @@ public class NAME extends MicroBench {
     }
 
     protected long doBatch(long numIterations) {
-        long i;
-        TYPE array[] = new TYPE[numIterations];
+        numIterations = Math.min(numIterations, Integer.MAX_VALUE);
+        TYPE array[] = new TYPE[(int)numIterations];
         TYPE val = INIT;
 
         // cache everything before the loop so there aren't any loads in the loop
@@ -62,6 +62,7 @@ public class NAME extends MicroBench {
         int s = shift;
         Unsafe u = UNSAFE;
 
+        long i;
         for (i = 0; i < numIterations; i++)
             u.OP(array, (i << s) + o, val);
 

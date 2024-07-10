@@ -59,15 +59,16 @@ public class NAME extends MicroBench {
     }
 
     protected long doBatch(long numIterations) {
-        long i;
+        numIterations = Math.min(numIterations, Integer.MAX_VALUE);
         ACC_TYPE acc = 0;
-        TYPE array[] = new TYPE[numIterations];
+        TYPE array[] = new TYPE[(int)numIterations];
 
         // cache everything before the loop so there aren't any extra loads in the loop
         int o = offset;
         int s = shift;
         Unsafe u = UNSAFE;
 
+        long i;
         for (i = 0; i < numIterations; i++) {
             TYPE val = u.OP(array, (i << s) + o);
             // do something simple with the loaded value so the load doesn't get killed by DCE
