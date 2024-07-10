@@ -68,7 +68,7 @@ public class NAME extends MicroBench {
         TYPE v = val;
 
         long i;
-        for (i = 0; i < numIterations; i++) if (i != 3)
+        for (i = 0; i < size; i++)
             u.OP(b, (i << s) + o, v);
 
         return i;
