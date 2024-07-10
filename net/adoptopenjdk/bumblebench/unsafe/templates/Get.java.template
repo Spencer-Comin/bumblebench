@@ -34,7 +34,7 @@ public class NAME extends MicroBench {
     private static long referenceToLong(Object o) { return o == null ? 1 : 0; }
 
     TYPE array[] = new TYPE[512];
-    public long dump;
+    public ACC_TYPE dump;
 
     static final int shift;
     static final int offset;
@@ -61,7 +61,7 @@ public class NAME extends MicroBench {
 
     protected long doBatch(long numIterations) {
         long i;
-        long acc = 0;
+        ACC_TYPE acc = 0;
 
         // cache everything before the loop so there aren't any extra loads in the loop
         Object b = array;

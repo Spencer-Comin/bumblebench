@@ -19,13 +19,19 @@ execute a build.
     <dirname property="unsafe-dir" file="${ant.file.net.adoptopenjdk.bumblebench.unsafe}"/>
 
     <target name="generate-get-benchmark" description="generate an unsafe get benchmark">
-        <exec executable="gcc" failonerror="true" input="${unsafe-dir}/templates/Get.java.template" output="${unsafe-dir}/Get${type-mode}Bench.java">
-            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -"/>
+        <exec executable="gcc"
+        failonerror="true"
+        input="${unsafe-dir}/templates/Get.java.template"
+        output="${unsafe-dir}/Get${type-mode}Bench.java">
+            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -D'ACC_TYPE=${acc-type}' -"/>
         </exec>
     </target>
 
     <target name="generate-put-benchmark" description="generate an unsafe put benchmark">
-        <exec executable="gcc" failonerror="true" input="${unsafe-dir}/templates/Put.java.template" output="${unsafe-dir}/Put${type-mode}Bench.java">
+        <exec executable="gcc"
+        failonerror="true"
+        input="${unsafe-dir}/templates/Put.java.template"
+        output="${unsafe-dir}/Put${type-mode}Bench.java">
             <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -"/>
         </exec>
     </target>
@@ -35,46 +41,55 @@ execute a build.
             <param name="type" value="Object"/>
             <param name="type-mode" value="Reference${mode}"/>
             <param name="update-acc" value="acc += (val)==null ? 1 : 0"/>
+            <param name="acc-type" value="long"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="int"/>
             <param name="type-mode" value="Int${mode}"/>
             <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="int"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="boolean"/>
             <param name="type-mode" value="Boolean${mode}"/>
             <param name="update-acc" value="acc += (val) ? 1 : 0"/>
+            <param name="acc-type" value="long"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="byte"/>
             <param name="type-mode" value="Byte${mode}"/>
             <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="byte"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="short"/>
             <param name="type-mode" value="Short${mode}"/>
             <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="short"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="char"/>
             <param name="type-mode" value="Char${mode}"/>
             <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="char"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="long"/>
             <param name="type-mode" value="Long${mode}"/>
             <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="long"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="float"/>
             <param name="type-mode" value="Float${mode}"/>
-            <param name="update-acc" value="acc += Float.floatToRawIntBits(val)"/>
+            <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="float"/>
         </antcall>
         <antcall target="generate-get-benchmark">
             <param name="type" value="double"/>
             <param name="type-mode" value="Double${mode}"/>
-            <param name="update-acc" value="acc += Double.doubleToRawLongBits(val)"/>
+            <param name="update-acc" value="acc += val"/>
+            <param name="acc-type" value="double"/>
         </antcall>
     </target>
 
