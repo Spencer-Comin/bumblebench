@@ -63,7 +63,7 @@ public class NAME extends MicroBench {
 
     protected long doBatch(long numIterations) {
         int size = (int) Math.min(numIterations, Integer.MAX_VALUE);
-        if (size != stashedSize) {
+        if (size > stashedSize) {
             array = new TYPE[size];
             stashedSize = size;
         }
