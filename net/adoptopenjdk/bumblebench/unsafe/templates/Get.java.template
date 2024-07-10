@@ -38,6 +38,9 @@ public class NAME extends MicroBench {
     static final int shift;
     static final int offset;
 
+    private static TYPE array[];
+    private static int stashedSize = -1;
+
     static {
         try {
             Field f = Unsafe.class.getDeclaredField("theUnsafe");
@@ -59,18 +62,23 @@ public class NAME extends MicroBench {
     }
 
     protected long doBatch(long numIterations) {
-        numIterations = Math.min(numIterations, Integer.MAX_VALUE);
+        int size = (int) Math.min(numIterations, Integer.MAX_VALUE);
+        if (size != stashedSize) {
+            array = new TYPE[size];
+            stashedSize = size;
+        }
+
         ACC_TYPE acc = 0;
-        TYPE array[] = new TYPE[(int)numIterations];
 
         // cache everything before the loop so there aren't any extra loads in the loop
+        Object b = array;
         int o = offset;
         int s = shift;
         Unsafe u = UNSAFE;
 
         long i;
-        for (i = 0; i < numIterations; i++) {
-            TYPE val = u.OP(array, (i << s) + o);
+        for (i = 0; i < size; i++) {
+            TYPE val = u.OP(b, (i << s) + o);
             // do something simple with the loaded value so the load doesn't get killed by DCE
             UPDATE_ACC(acc, val);
         }
