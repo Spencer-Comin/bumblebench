@@ -33,7 +33,6 @@ public class NAME extends MicroBench {
     private static long boolToLong(boolean b) { return b ? 1 : 0; }
     private static long referenceToLong(Object o) { return o == null ? 1 : 0; }
 
-    TYPE array[] = new TYPE[512];
     public ACC_TYPE dump;
 
     static final int shift;
@@ -62,15 +61,15 @@ public class NAME extends MicroBench {
     protected long doBatch(long numIterations) {
         long i;
         ACC_TYPE acc = 0;
+        TYPE array[] = new TYPE[numIterations];
 
         // cache everything before the loop so there aren't any extra loads in the loop
-        Object b = array;
         int o = offset;
         int s = shift;
         Unsafe u = UNSAFE;
 
         for (i = 0; i < numIterations; i++) {
-            TYPE val = u.OP(b, ((i % 512) << s) + o);
+            TYPE val = u.OP(array, (i << s) + o);
             // do something simple with the loaded value so the load doesn't get killed by DCE
             UPDATE_ACC(acc, val);
         }

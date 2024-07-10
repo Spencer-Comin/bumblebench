@@ -29,9 +29,6 @@ import java.lang.reflect.InaccessibleObjectException;
 
 public class NAME extends MicroBench {
     static final Unsafe UNSAFE;
-    static final TYPE val = INIT;
-    static final TYPE array[] = new TYPE[256];
-
     static final int shift;
     static final int offset;
 
@@ -57,16 +54,16 @@ public class NAME extends MicroBench {
 
     protected long doBatch(long numIterations) {
         long i;
+        TYPE array[] = new TYPE[numIterations];
+        Type val = INIT;
 
         // cache everything before the loop so there aren't any loads in the loop
-        Object b = array;
         int o = offset;
         int s = shift;
         Unsafe u = UNSAFE;
-        TYPE v = val;
 
         for (i = 0; i < numIterations; i++)
-            u.OP(b, ((i % 256) << s) + o, v);
+            u.OP(array, (i << s) + o, val);
 
         return i;
     }
