@@ -34,8 +34,7 @@ public class NAME extends MicroBench {
 
     static final TYPE val = INIT;
 
-    private static TYPE array[];
-    private static int stashedSize = -1;
+    private static final TYPE array[] = new TYPE[Integer.MAX_VALUE];
 
     static {
         try {
@@ -59,10 +58,6 @@ public class NAME extends MicroBench {
 
     protected long doBatch(long numIterations) {
         int size = (int) Math.min(numIterations, Integer.MAX_VALUE);
-        if (size > stashedSize) {
-            array = new TYPE[size];
-            stashedSize = size;
-        }
 
         // cache everything before the loop so there aren't any loads in the loop
         Object b = array;
