@@ -35,7 +35,7 @@ public class NAME extends MicroBench {
     static final TYPE val = INIT;
 
     private static final int arraySize = 0x8000000;
-    private static final TYPE array[] = new TYPE[arraySize];
+    private static final Object array;
 
     static {
         try {
@@ -55,6 +55,8 @@ public class NAME extends MicroBench {
         offset = UNSAFE.arrayBaseOffset(TYPE[].class);
         int ascale = UNSAFE.arrayIndexScale(TYPE[].class);
         shift = 31 - Integer.numberOfLeadingZeros(ascale);
+
+        array = new TYPE[arraySize];
     }
 
     protected long doBatch(long numIterations) {
