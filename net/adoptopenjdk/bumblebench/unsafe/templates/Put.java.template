@@ -55,7 +55,7 @@ public class NAME extends MicroBench {
     protected long doBatch(long numIterations) {
         long i;
         TYPE array[] = new TYPE[numIterations];
-        Type val = INIT;
+        TYPE val = INIT;
 
         // cache everything before the loop so there aren't any loads in the loop
         int o = offset;
