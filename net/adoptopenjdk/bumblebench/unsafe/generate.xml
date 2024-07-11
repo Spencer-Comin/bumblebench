@@ -130,7 +130,7 @@ execute a build.
             <antcall target="generate-put-benchmark">
                 <param name="type" value="long"/>
                 <param name="type-mode" value="Long${mode}"/>
-                <param name="init" value="0x5a5a5a5a5a5a5a5a"/>
+                <param name="init" value="0x5a5a5a5a5a5a5a5aL"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="float"/>
