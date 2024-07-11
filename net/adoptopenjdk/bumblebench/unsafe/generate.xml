@@ -105,7 +105,7 @@ execute a build.
             <antcall target="generate-put-benchmark">
                 <param name="type" value="int"/>
                 <param name="type-mode" value="Int${mode}"/>
-                <param name="init" value="85"/>
+                <param name="init" value="0x5a5a5a5a"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="boolean"/>
@@ -115,32 +115,32 @@ execute a build.
             <antcall target="generate-put-benchmark">
                 <param name="type" value="byte"/>
                 <param name="type-mode" value="Byte${mode}"/>
-                <param name="init" value="0x17"/>
+                <param name="init" value="0x5a"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="short"/>
                 <param name="type-mode" value="Short${mode}"/>
-                <param name="init" value="17"/>
+                <param name="init" value="0x5a5a"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="char"/>
                 <param name="type-mode" value="Char${mode}"/>
-                <param name="init" value="99"/>
+                <param name="init" value="0x5a"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="long"/>
                 <param name="type-mode" value="Long${mode}"/>
-                <param name="init" value="42"/>
+                <param name="init" value="0x5a5a5a5a5a5a5a5a"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="float"/>
                 <param name="type-mode" value="Float${mode}"/>
-                <param name="init" value="1.0f"/>
+                <param name="init" value="123.456f"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="double"/>
                 <param name="type-mode" value="Double${mode}"/>
-                <param name="init" value="1.0d"/>
+                <param name="init" value="123.456d"/>
             </antcall>
         </parallel>
     </target>
