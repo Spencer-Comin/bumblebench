@@ -27,15 +27,9 @@ import jdk.internal.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 
-public class NAME extends MicroBench {
+public class NAME {
     static final Unsafe UNSAFE;
-    static final int shift;
-    static final int offset;
-
     static final TYPE val = INIT;
-
-    private static final int arraySize = 0x8000000;
-    private static final Object array;
 
     static {
         try {
@@ -51,28 +45,145 @@ public class NAME extends MicroBench {
         } catch (Exception e) {
             throw new RuntimeException("Unable to get Unsafe instance.", e);
         }
-
-        offset = UNSAFE.arrayBaseOffset(TYPE[].class);
-        int ascale = UNSAFE.arrayIndexScale(TYPE[].class);
-        shift = 31 - Integer.numberOfLeadingZeros(ascale);
-
-        array = new TYPE[arraySize];
     }
 
-    protected long doBatch(long numIterations) {
-        int size = (int) Math.min(numIterations, arraySize);
+    public static class Member extends MicroBench {
+        TYPE field1;
+        TYPE field2;
 
-        // cache everything before the loop so there aren't any loads in the loop
-        Object b = array;
-        int o = offset;
-        int s = shift;
-        Unsafe u = UNSAFE;
-        TYPE v = val;
+        static final Object base = new Member();
+        static final long field1Offset;
+        static final long field2Offset;
 
-        long i;
-        for (i = 0; i < size; i++)
-            u.OP(b, (i << s) + o, v);
+        static {
+            try {
+                Field f = Member.class.getDeclaredField("field1");
+                field1Offset = UNSAFE.objectFieldOffset(f);
 
-        return i;
+                f = Member.class.getDeclaredField("field2");
+                field2Offset = UNSAFE.objectFieldOffset(f);
+            } catch (NoSuchFieldException e) {
+                // should never happen
+                throw new RuntimeException(e);
+            }
+        }
+
+        protected long doBatch(long numIterations) {
+            int rand = 42;
+
+            // cache everything before the loop so there aren't any extra loads in the loop
+            Object b = base;
+            long o1 = field1Offset;
+            long o2 = field2Offset;
+            Unsafe u = UNSAFE;
+            TYPE v = val;
+
+            long i;
+            long o;
+            for (i = 0; i < numIterations; i++) {
+                rand ^= rand >> 5;
+                rand ^= rand << 24;
+
+                if ((rand&1) == 0) {
+                    o = o1;
+                } else {
+                    o = o2;
+                }
+
+                u.OP(b, o, v);
+            }
+
+            return i;
+        }
+    }
+
+    public static class StaticField extends MicroBench {
+        static TYPE field1;
+        static TYPE field2;
+
+        static final Object field1Base;
+        static final Object field2Base;
+        static final long field1Offset;
+        static final long field2Offset;
+
+        static {
+            try {
+                Field f = StaticField.class.getDeclaredField("field1");
+                field1Base = UNSAFE.staticFieldBase(f);
+                field1Offset = UNSAFE.staticFieldOffset(f);
+
+                f = StaticField.class.getDeclaredField("field2");
+                field2Base = UNSAFE.staticFieldBase(f);
+                field2Offset = UNSAFE.staticFieldOffset(f);
+            } catch (NoSuchFieldException e) {
+                // should never happen
+                throw new RuntimeException(e);
+            }
+        }
+
+        protected long doBatch(long numIterations) {
+            int rand = 42;
+
+            // cache everything before the loop so there aren't any extra loads in the loop
+            Object b1 = field1Base;
+            Object b2 = field2Base;
+            long o1 = field1Offset;
+            long o2 = field2Offset;
+            Unsafe u = UNSAFE;
+            TYPE v = val;
+
+            long i;
+            long o;
+            Object b;
+            for (i = 0; i < numIterations; i++) {
+                rand ^= rand >> 5;
+                rand ^= rand << 24;
+
+                if ((rand&1) == 0) {
+                    b = b1;
+                    o = o1;
+                } else {
+                    b = b2;
+                    o = o2;
+                }
+
+                u.OP(b, o, v);
+            }
+
+            return i;
+        }
+    }
+
+    public static class Array extends MicroBench {
+        static final int shift;
+        static final int offset;
+
+        private static final int arraySize = 0x8000000;
+        private static final Object array;
+
+        static {
+            offset = UNSAFE.arrayBaseOffset(TYPE[].class);
+            int ascale = UNSAFE.arrayIndexScale(TYPE[].class);
+            shift = 31 - Integer.numberOfLeadingZeros(ascale);
+
+            array = new TYPE[arraySize];
+        }
+
+        protected long doBatch(long numIterations) {
+            int size = (int) Math.min(numIterations, arraySize);
+
+            // cache everything before the loop so there aren't any loads in the loop
+            Object b = array;
+            int o = offset;
+            int s = shift;
+            Unsafe u = UNSAFE;
+            TYPE v = val;
+
+            long i;
+            for (i = 0; i < size; i++)
+                u.OP(b, (i << s) + o, v);
+
+            return i;
+        }
     }
 }
