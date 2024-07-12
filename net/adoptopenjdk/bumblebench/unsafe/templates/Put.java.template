@@ -69,7 +69,7 @@ public class NAME {
         }
 
         protected long doBatch(long numIterations) {
-            int rand = 42;
+            long rand = 42;
 
             // cache everything before the loop so there aren't any extra loads in the loop
             Object b = base;
@@ -81,10 +81,12 @@ public class NAME {
             long i;
             long o;
             for (i = 0; i < numIterations; i++) {
-                rand ^= rand >> 5;
-                rand ^= rand << 24;
+                if (i%64 == 0) {
+                    rand ^= rand << 7;
+                    rand ^= rand >> 9;
+                }
 
-                if ((rand&1) == 0) {
+                if ((rand & (1<<(i%64))) == 0) {
                     o = o1;
                 } else {
                     o = o2;
