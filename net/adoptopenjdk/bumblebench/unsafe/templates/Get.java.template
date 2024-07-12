@@ -72,7 +72,7 @@ public class NAME {
         }
 
         protected long doBatch(long numIterations) {
-            int rand = 42;
+            boolean toggle = false;
             ACC_TYPE acc = 0;
 
             // cache everything before the loop so there aren't any extra loads in the loop
@@ -86,16 +86,14 @@ public class NAME {
             Object b;
             long o;
             for (i = 0; i < numIterations; i++) {
-                rand ^= rand >> 5;
-                rand ^= rand << 24;
-
-                if ((rand&1) == 0) {
+                if (toggle) {
                     b = b1;
                     o = o1;
                 } else {
                     b = b2;
                     o = o2;
                 }
+                toggle = !toggle;
 
                 TYPE val = u.OP(b, o);
                 UPDATE_ACC(acc, val);
@@ -128,7 +126,7 @@ public class NAME {
         }
 
         protected long doBatch(long numIterations) {
-            int rand = 42;
+            boolean toggle = false;
             ACC_TYPE acc = 0;
 
             // cache everything before the loop so there aren't any extra loads in the loop
@@ -140,14 +138,12 @@ public class NAME {
             long i;
             long o;
             for (i = 0; i < numIterations; i++) {
-                rand ^= rand >> 5;
-                rand ^= rand << 24;
-
-                if ((rand&1) == 0) {
+                if (toggle) {
                     o = o1;
                 } else {
                     o = o2;
                 }
+                toggle = !toggle;
 
                 TYPE val = u.OP(b, o);
                 UPDATE_ACC(acc, val);
