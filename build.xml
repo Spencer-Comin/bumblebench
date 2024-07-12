@@ -199,6 +199,14 @@ execute a build.
 		</javac>
 
         <!-- unsafe -->
+        <property environment="env"/>
+        <exec executable="gcc" failonerror="true">
+            <arg line="-c -fPIC -I${env.JAVA_HOME}/include ${src-unsafe}/native.c -o ${src-unsafe}/native.o"/>
+        </exec>
+        <exec executable="gcc" failonerror="true">
+            <arg line="-shared -fPIC -lc ${src-unsafe}/native.o -o ${src-unsafe}/libnative.so"/>
+        </exec>
+        <delete file="${src-unsafe}/native.o"/>
         <javac srcdir="${src-unsafe}"
         debug="on"
         destdir=""
@@ -233,5 +241,6 @@ execute a build.
         <delete>
             <fileset dir="${src-unsafe}" includes="*Bench.java"/>
         </delete>
+        <delete file="${src-unsafe}/libnative.so"/>
 	</target>
 </project>

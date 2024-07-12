@@ -47,6 +47,42 @@ public class NAME {
         }
     }
 
+    public static class NativeAddress extends MicroBench {
+        static final long offset1;
+        static final long offset2;
+
+        static {
+            offset1 = Native.getOffset1();
+            offset2 = Native.getOffset2();
+        }
+
+        protected long doBatch(long numIterations) {
+            boolean toggle = false;
+
+            // cache everything before the loop so there aren't any extra loads in the loop
+            long o1 = offset1;
+            long o2 = offset2;
+            Unsafe u = UNSAFE;
+            TYPE v = val;
+
+            long i;
+            Object b;
+            long o;
+            for (i = 0; i < numIterations; i++) {
+                if (toggle) {
+                    o = o1;
+                } else {
+                    o = o2;
+                }
+                toggle = !toggle;
+
+                u.OP(null, o, v);
+            }
+
+            return i;
+        }
+    }
+
     public static class Member extends MicroBench {
         TYPE field1;
         TYPE field2;
