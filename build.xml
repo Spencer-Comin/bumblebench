@@ -201,7 +201,7 @@ execute a build.
         <!-- unsafe -->
         <property environment="env"/>
         <exec executable="gcc" failonerror="true">
-            <arg line="-c -fPIC -I${env.JAVA_HOME}/include ${src-unsafe}/native.c -o ${src-unsafe}/native.o"/>
+            <arg line="-c -fPIC -I${env.JAVA_HOME}/include -I${env.JAVA_HOME}/include/linux ${src-unsafe}/native.c -o ${src-unsafe}/native.o"/>
         </exec>
         <exec executable="gcc" failonerror="true">
             <arg line="-shared -fPIC -lc ${src-unsafe}/native.o -o ${src-unsafe}/libnative.so"/>

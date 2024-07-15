@@ -12,7 +12,14 @@
 * limitations under the License.
 *******************************************************************************/
 
-#define NAME__(tm) Put ## tm ## Bench
+#ifdef CONST
+#define NAME__(tm) PutConst ## tm ## Bench
+#undef UPDATE_VAL
+#define UPDATE_VAL(val)
+#else
+#define NAME__(tm) PutVar ## tm ## Bench
+#endif
+
 #define NAME_(tm) NAME__(tm)
 #define NAME NAME_(TYPEMODE)
 
@@ -29,7 +36,6 @@ import java.lang.reflect.InaccessibleObjectException;
 
 public class NAME {
     static final Unsafe UNSAFE;
-    static final TYPE val = INIT;
 
     static {
         try {
@@ -58,12 +64,12 @@ public class NAME {
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
+            TYPE v = INIT;
 
             // cache everything before the loop so there aren't any extra loads in the loop
             long o1 = offset1;
             long o2 = offset2;
             Unsafe u = UNSAFE;
-            TYPE v = val;
 
             long i;
             Object b;
@@ -75,6 +81,7 @@ public class NAME {
                     o = o2;
                 }
                 toggle = !toggle;
+                UPDATE_VAL(v);
 
                 u.OP(null, o, v);
             }
@@ -106,13 +113,13 @@ public class NAME {
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
+            TYPE v = INIT;
 
             // cache everything before the loop so there aren't any extra loads in the loop
             Object b = base;
             long o1 = field1Offset;
             long o2 = field2Offset;
             Unsafe u = UNSAFE;
-            TYPE v = val;
 
             long i;
             long o;
@@ -123,6 +130,7 @@ public class NAME {
                     o = o2;
                 }
                 toggle = !toggle;
+                UPDATE_VAL(v);
 
                 u.OP(b, o, v);
             }
@@ -157,6 +165,7 @@ public class NAME {
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
+            TYPE v = INIT;
 
             // cache everything before the loop so there aren't any extra loads in the loop
             Object b1 = field1Base;
@@ -164,7 +173,6 @@ public class NAME {
             long o1 = field1Offset;
             long o2 = field2Offset;
             Unsafe u = UNSAFE;
-            TYPE v = val;
 
             long i;
             long o;
@@ -178,6 +186,7 @@ public class NAME {
                     o = o2;
                 }
                 toggle = !toggle;
+                UPDATE_VAL(v);
 
                 u.OP(b, o, v);
             }
@@ -203,17 +212,19 @@ public class NAME {
 
         protected long doBatch(long numIterations) {
             int size = (int) Math.min(numIterations, arraySize);
+            TYPE v = INIT;
 
             // cache everything before the loop so there aren't any loads in the loop
             Object b = array;
             int o = offset;
             int s = shift;
             Unsafe u = UNSAFE;
-            TYPE v = val;
 
             long i;
-            for (i = 0; i < size; i++)
+            for (i = 0; i < size; i++) {
+                UPDATE_VAL(v);
                 u.OP(b, (i << s) + o, v);
+            }
 
             return i;
         }

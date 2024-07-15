@@ -31,8 +31,14 @@ execute a build.
         <exec executable="gcc"
         failonerror="true"
         input="${unsafe-dir}/templates/Put.java.template"
-        output="${unsafe-dir}/Put${type-mode}Bench.java">
-            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -"/>
+        output="${unsafe-dir}/PutConst${type-mode}Bench.java">
+            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -DCONST -"/>
+        </exec>
+        <exec executable="gcc"
+        failonerror="true"
+        input="${unsafe-dir}/templates/Put.java.template"
+        output="${unsafe-dir}/PutVar${type-mode}Bench.java">
+            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -D'UPDATE_VAL(val)=${update-val}' -"/>
         </exec>
     </target>
 
@@ -101,46 +107,55 @@ execute a build.
                 <param name="type" value="Object"/>
                 <param name="type-mode" value="Reference${mode}"/>
                 <param name="init" value="new Object()"/>
+                <param name="update-val" value="val=val.hashCode()+1"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="int"/>
                 <param name="type-mode" value="Int${mode}"/>
                 <param name="init" value="0x5a5a5a5a"/>
+                <param name="update-val" value="val++"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="boolean"/>
                 <param name="type-mode" value="Boolean${mode}"/>
-                <param name="init" value="true"/>
+                <param name="init" value="true, nval=false, nnval=true"/>
+                <param name="update-val" value="boolean tmp=val; val=nval; nval=nnval; nnval=Boolean.logicalXor(tmp,nnval)"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="byte"/>
                 <param name="type-mode" value="Byte${mode}"/>
                 <param name="init" value="0x5a"/>
+                <param name="update-val" value="val++"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="short"/>
                 <param name="type-mode" value="Short${mode}"/>
                 <param name="init" value="0x5a5a"/>
+                <param name="update-val" value="val++"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="char"/>
                 <param name="type-mode" value="Char${mode}"/>
                 <param name="init" value="0x5a"/>
+                <param name="update-val" value="val++"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="long"/>
                 <param name="type-mode" value="Long${mode}"/>
                 <param name="init" value="0x5a5a5a5a5a5a5a5aL"/>
+                <param name="update-val" value="val++"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="float"/>
                 <param name="type-mode" value="Float${mode}"/>
                 <param name="init" value="123.456f"/>
+                <param name="update-val" value="val += 420.69f"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="double"/>
                 <param name="type-mode" value="Double${mode}"/>
                 <param name="init" value="123.456d"/>
+                <param name="update-val" value="val += 420.69d"/>
             </antcall>
         </parallel>
     </target>
