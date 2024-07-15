@@ -38,12 +38,43 @@ execute a build.
     <property name="src-unsafe" value="${basedir}/net/adoptopenjdk/bumblebench/unsafe"/>
     <property name="src-unsafe-generator" value="${src-unsafe}/generator"/>
 
-    <import file="${src-unsafe}/generate.xml" as="unsafe"/>
+    <property environment="env"/>
+    <condition property="collections?">
+        <contains string="${env.BENCHMARKS}" substring="collections" casesensitive="false"/>
+    </condition>
+    <condition property="crypto?">
+        <contains string="${env.BENCHMARKS}" substring="crypto" casesensitive="false"/>
+    </condition>
+    <condition property="examples?">
+        <contains string="${env.BENCHMARKS}" substring="examples" casesensitive="false"/>
+    </condition>
+    <condition property="string?">
+        <contains string="${env.BENCHMARKS}" substring="string" casesensitive="false"/>
+    </condition>
+    <condition property="gpu?">
+        <contains string="${env.BENCHMARKS}" substring="gpu" casesensitive="false"/>
+    </condition>
+    <condition property="lambda?">
+        <contains string="${env.BENCHMARKS}" substring="lambda" casesensitive="false"/>
+    </condition>
+    <condition property="jni?">
+        <contains string="${env.BENCHMARKS}" substring="jni" casesensitive="false"/>
+    </condition>
+    <condition property="math?">
+        <contains string="${env.BENCHMARKS}" substring="math" casesensitive="false"/>
+    </condition>
+    <condition property="humble?">
+        <contains string="${env.BENCHMARKS}" substring="humble" casesensitive="false"/>
+    </condition>
+    <condition property="arraycopy?">
+        <contains string="${env.BENCHMARKS}" substring="arraycopy" casesensitive="false"/>
+    </condition>
+    <condition property="unsafe?">
+        <contains string="${env.BENCHMARKS}" substring="unsafe" casesensitive="false"/>
+    </condition>
 
-	<target name="compile-all" description="compile" depends="unsafe.benchmarks">
-
-		<!-- core -->
-		<javac srcdir="${src-core}"
+    <target name="compile-core">
+        <javac srcdir="${src-core}"
              destdir=""
              debug="on"
              source="1.8"
@@ -51,7 +82,7 @@ execute a build.
              includeantruntime="false"
              excludes="">
 		</javac>
-		<javac srcdir="${src-core}"
+        <javac srcdir="${src-core}"
              destdir=""
              debug="on"
              source="1.8"
@@ -59,9 +90,10 @@ execute a build.
              includeantruntime="false"
              includes="**/ParallelBench.java">
 		</javac>
+    </target>
 
-		<!-- collections -->
-		<javac srcdir="${src-collections}"
+    <target name="compile-collections" extensionOf="compile-all" if="collections">
+        <javac srcdir="${src-collections}"
             debug="on"
             destdir=""
             source="1.8"
@@ -80,9 +112,10 @@ execute a build.
             classpath="${src-core}"
             includes="**/*ambda*.java">
 		</javac>
+    </target>
 
-		<!-- crypto -->
-		<javac srcdir="${src-crypto}"
+    <target name="compile-crypto" extensionOf="compile-all" if="crypto?">
+        <javac srcdir="${src-crypto}"
             debug="on"
             destdir=""
             source="1.8"
@@ -90,9 +123,10 @@ execute a build.
             includeantruntime="false"
             classpath="${src-core}">
 		</javac>
+    </target>
 
-		<!-- examples -->
-		<javac srcdir="${src-examples}"
+    <target name="compile-examples" extensionOf="compile-all" if="examples?">
+        <javac srcdir="${src-examples}"
             debug="on"
             destdir=""
             source="1.8"
@@ -119,8 +153,9 @@ execute a build.
             classpath="${src-examples}"
         	excludes="**/*ambda*.java, **/SocketEchoBench.java">
 		</javac>
+    </target>
 
-		<!-- string -->
+    <target name="compile-string" extensionOf="compile-all" if="string?">
         <javac srcdir="${src-string}"
             debug="on"
             destdir=""
@@ -130,9 +165,10 @@ execute a build.
             includeantruntime="false"
             classpath="${src-string}">
         </javac>
+    </target>
 
-		<!-- gpu -->
-		<javac srcdir="${src-gpu}"
+    <target name="compile-gpu" extensionOf="compile-all" if="gpu?">
+        <javac srcdir="${src-gpu}"
             debug="on"
             destdir=""
             source="1.8"
@@ -140,38 +176,30 @@ execute a build.
             includeantruntime="false"
             classpath="${src-gpu}">
 		</javac>
+    </target>
 
-		<!-- indy -->
-		<!--
-        <javac srcdir="${src-indy}"
-             debug="on"
-             destdir=""
-             source="1.8"
-             target="1.8"
-             classpath="${src-indy},${basedir}/asm-all-4.0.jar">
-         </javac>
-    	-->
-
-		<!-- lambda -->
-		<javac srcdir="${src-lambda}"
+    <target name="compile-lambda" extensionOf="compile-all" if="lambda?">
+        <javac srcdir="${src-lambda}"
              debug="on"
              destdir=""
              source="1.8"
              target="1.8"
 			 includeantruntime="false">
 		</javac>
+    </target>
 
-		<!-- JNI -->
-		<javac srcdir="${src-jni}"
+    <target name="compile-jni" extensionOf="compile-all" if="jni?">
+        <javac srcdir="${src-jni}"
              debug="on"
              destdir=""
              source="1.8"
              target="1.8"
 			 includeantruntime="false">
 		</javac>
+    </target>
 
-		<!-- math -->
-		<javac srcdir="${src-math}"
+    <target name="compile-math" extensionOf="compile-all" if="math?">
+        <javac srcdir="${src-math}"
              debug="on"
              destdir=""
              source="1.8"
@@ -179,27 +207,30 @@ execute a build.
 			 includeantruntime="false"
              classpath="${src-math}">
 		</javac>
+    </target>
 
-		<!-- humble -->
-		<javac srcdir="${src-humble}"
-        debug="on"
-        destdir=""
-        source="1.8"
-        target="1.8"
-        includeantruntime="false">
+    <target name="compile-humble" extensionOf="compile-all" if="humble?">
+        <javac srcdir="${src-humble}"
+            debug="on"
+            destdir=""
+            source="1.8"
+            target="1.8"
+            includeantruntime="false">
 		</javac>
+    </target>
 
-		<!-- arraycopy -->
-		<javac srcdir="${src-arraycopy}"
-        debug="on"
-        destdir=""
-        source="1.8"
-        target="1.8"
-        includeantruntime="false">
+    <target name="compile-arraycopy" extensionOf="compile-all" if="arraycopy?">
+        <javac srcdir="${src-arraycopy}"
+            debug="on"
+            destdir=""
+            source="1.8"
+            target="1.8"
+            includeantruntime="false">
 		</javac>
+    </target>
 
-        <!-- unsafe -->
-        <property environment="env"/>
+    <import file="${src-unsafe}/generate.xml" as="unsafe"/>
+    <target name="compile-unsafe" extensionOf="compile-all" depends="unsafe.benchmarks" if="unsafe?">
         <exec executable="gcc" failonerror="true">
             <arg line="-c -fPIC -I${env.JAVA_HOME}/include -I${env.JAVA_HOME}/include/linux ${src-unsafe}/native.c -o ${src-unsafe}/native.o"/>
         </exec>
@@ -208,15 +239,17 @@ execute a build.
         </exec>
         <delete file="${src-unsafe}/native.o"/>
         <javac srcdir="${src-unsafe}"
-        debug="on"
-        destdir=""
-        source="21"
-        target="21"
-        includeantruntime="false"
-        excludes="generator/**">
+            debug="on"
+            destdir=""
+            source="21"
+            target="21"
+            includeantruntime="false"
+            excludes="generator/**">
             <compilerarg line="--add-exports java.base/jdk.internal.misc=ALL-UNNAMED"/>
         </javac>
-	</target>
+    </target>
+
+	<extension-point name="compile-all" description="compile" depends="compile-core"/>
 
 	<!-- Create BumbleBench.jar and clean up -->
 	<target name="dist" depends="compile-all" description="Generate the jar file" >
@@ -238,9 +271,9 @@ execute a build.
 			<fileset dir="." includes="**/*.class"/>
 		</delete>
 
-        <delete>
+        <delete quiet="true">
             <fileset dir="${src-unsafe}" includes="*Bench.java"/>
         </delete>
-        <delete file="${src-unsafe}/libnative.so"/>
+        <delete file="${src-unsafe}/libnative.so" quiet="true"/>
 	</target>
 </project>

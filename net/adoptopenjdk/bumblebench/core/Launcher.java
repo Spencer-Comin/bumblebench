@@ -21,6 +21,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Arrays;
 
 public class Launcher extends Util {
 
@@ -41,6 +44,9 @@ public class Launcher extends Util {
 			err().println("\n-= BumbleBench series " + BumbleBench.SERIES_NUMBER + " version " + BumbleBench.VERSION_NUMBER + "." + BumbleBench.REVISION_NUMBER + " =-\n");
 			listBenchmarksIn(System.getProperty("java.class.path").split(":")[0], packages);
 			System.exit(1);
+		} else if (args[0].equals("-list")) {
+			listBenchmarksIn(System.getProperty("java.class.path").split(":")[0], packages);
+			return;
 		}
 
 		String testName = args[0].replace('.', '$');
@@ -65,8 +71,8 @@ public class Launcher extends Util {
 		}
 	}
 
-	static final String defaultPackagePath = ":"
-		+ ":net.adoptopenjdk.bumblebench.collections"
+	static final String defaultPackagePath =
+		  "net.adoptopenjdk.bumblebench.collections"
 		+ ":net.adoptopenjdk.bumblebench.crypto"
 		+ ":net.adoptopenjdk.bumblebench.examples"
 		+ ":net.adoptopenjdk.bumblebench.gpu"
@@ -80,6 +86,8 @@ public class Launcher extends Util {
 		+ ":net.adoptopenjdk.bumblebench.arraycopy"
 		+ ":net.adoptopenjdk.bumblebench.unsafe"
 		;
+
+	static final Set<String> defaultPackages = new HashSet<String>(Arrays.asList(defaultPackagePath.split(":")));
 
 	public static Class loadTestClass(String[] packageNames, String name) throws ClassNotFoundException, IOException {
 		ClassNotFoundException typicalException = null;
@@ -150,7 +158,7 @@ public class Launcher extends Util {
 				String className = entryName.substring(0, entryName.length()-6).replace('/','.');
 				try {
 					Class c = Class.forName(className, false, loader); // Testcase <clinit> can be expensive, so load without initializing
-					if (!Modifier.isAbstract(c.getModifiers()) && BumbleBench.class.isAssignableFrom(c))
+					if (defaultPackages.contains(c.getPackage().getName()) && !Modifier.isAbstract(c.getModifiers()) && BumbleBench.class.isAssignableFrom(c))
 						System.out.println(nameFromPath(c.getCanonicalName(), packages));
 				} catch (UnsupportedClassVersionError e) {
 					unsupportedClasses += 1;

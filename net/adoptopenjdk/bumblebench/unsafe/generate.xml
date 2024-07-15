@@ -15,7 +15,7 @@ to allow tools which invoke a root level build.xml file to
 execute a build.
 -->
 
-<project name="net.adoptopenjdk.bumblebench.unsafe" basedir="." default="benchmarks">
+<project name="net.adoptopenjdk.bumblebench.unsafe" basedir=".">
     <dirname property="unsafe-dir" file="${ant.file.net.adoptopenjdk.bumblebench.unsafe}"/>
 
     <target name="generate-get-benchmark" description="generate an unsafe get benchmark">
