@@ -106,8 +106,8 @@ execute a build.
             <antcall target="generate-put-benchmark">
                 <param name="type" value="Object"/>
                 <param name="type-mode" value="Reference${mode}"/>
-                <param name="init" value="new Object(); Object[] objs=new Object[256]; byte obj_index = 0"/>
-                <param name="update-val" value="val=objs[128+obj_index++]"/>
+                <param name="init" value="null, other1=new Object(), other2=new Object(); boolean selector = true;"/>
+                <param name="update-val" value="val=selector?other1:other2"/>
             </antcall>
             <antcall target="generate-put-benchmark">
                 <param name="type" value="int"/>

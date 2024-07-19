@@ -34,9 +34,7 @@ public class NAME {
 
     static {
         try {
-            Field f = Unsafe.class.getDeclaredField("theUnsafe");
-            f.setAccessible(true);
-            UNSAFE = (Unsafe) f.get(null);
+            UNSAFE = Unsafe.getUnsafe();
         } catch (IllegalAccessError e) {
             System.err.println("add \"--add-exports java.base/jdk.internal.misc=ALL-UNNAMED\" to your java command");
             throw new RuntimeException("Unable to get Unsafe instance.", e);
@@ -49,13 +47,8 @@ public class NAME {
     }
 
     public static class NativeAddress extends MicroBench {
-        static final long offset1;
-        static final long offset2;
-
-        static {
-            offset1 = Native.getOffset1();
-            offset2 = Native.getOffset2();
-        }
+        static final long offset1 = Native.getOffset1();
+        static final long offset2 = Native.getOffset2();
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
@@ -147,29 +140,14 @@ public class NAME {
         TYPE field1;
         TYPE field2;
 
-        static final Object base = new Member();
-        static final long field1Offset;
-        static final long field2Offset;
-
-        static {
-            try {
-                Field f = Member.class.getDeclaredField("field1");
-                field1Offset = UNSAFE.objectFieldOffset(f);
-
-                f = Member.class.getDeclaredField("field2");
-                field2Offset = UNSAFE.objectFieldOffset(f);
-            } catch (NoSuchFieldException e) {
-                // should never happen
-                throw new RuntimeException(e);
-            }
-        }
+        static final long field1Offset = UNSAFE.objectFieldOffset(Member.class, "field1");
+        static final long field2Offset = UNSAFE.objectFieldOffset(Member.class, "field2");
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
             ACC_TYPE acc = 0;
 
             // cache everything before the loop so there aren't any extra loads in the loop
-            Object b = base;
             long o1 = field1Offset;
             long o2 = field2Offset;
             Unsafe u = UNSAFE;
@@ -184,7 +162,7 @@ public class NAME {
                 }
                 toggle = !toggle;
 
-                TYPE val = u.OP(b, o);
+                TYPE val = u.OP(this, o);
                 UPDATE_ACC(acc, val);
             }
 
