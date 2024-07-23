@@ -32,4 +32,6 @@ public class Native {
 
     public static native long getOffset1();
     public static native long getOffset2();
+    public static native Object getBase1();
+    public static native Object getBase2();
 }
