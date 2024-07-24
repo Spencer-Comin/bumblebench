@@ -51,6 +51,7 @@ public class NAME {
         }
     }
 
+#ifndef NO_NATIVE
     public static class NativeAddress extends MicroBench {
         static final long offset1 = Native.getOffset1();
         static final long offset2 = Native.getOffset2();
@@ -83,6 +84,7 @@ public class NAME {
             return i;
         }
     }
+#endif // NO_NATIVE
 
     public static class Member extends MicroBench {
         TYPE field1;
