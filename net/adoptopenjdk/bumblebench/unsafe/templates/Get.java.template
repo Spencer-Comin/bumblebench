@@ -49,8 +49,6 @@ public class NAME {
     public static class NativeAddress extends MicroBench {
         static final long offset1 = Native.getOffset1();
         static final long offset2 = Native.getOffset2();
-        static final Object base1 = Native.getBase1();
-        static final Object base2 = Native.getBase2();
 
         protected long doBatch(long numIterations) {
             boolean toggle = false;
@@ -59,25 +57,20 @@ public class NAME {
             // cache everything before the loop so there aren't any extra loads in the loop
             long o1 = offset1;
             long o2 = offset2;
-            Object b1 = base1;
-            Object b2 = base2;
             Unsafe u = UNSAFE;
 
             long i;
-            Object b;
             long o;
             for (i = 0; i < numIterations; i++) {
                 if (toggle) {
                     o = o1;
-                    b = b1;
                 } else {
                     o = o2;
-                    b = b2;
                 }
                 toggle = !toggle;
 
                 System.out.printf("From Java: About to read a %s from 0x%x\n", TYPE.class.getSimpleName(), o);
-                TYPE val = u.OP(b, o);
+                TYPE val = u.OP(null, o);
                 System.out.printf("From Java: Read a %s from 0x%x\n", TYPE.class.getSimpleName(), o);
                 UPDATE_ACC(acc, val);
             }
