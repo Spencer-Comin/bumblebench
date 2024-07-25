@@ -25,7 +25,7 @@ execute a build.
         failonerror="true"
         input="${unsafe-dir}/templates/Get.java.template"
         output="${unsafe-dir}/Get${type-mode}Bench.java">
-            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -D'ACC_TYPE=${acc-type}'"/>
+            <arg line="-E -CC -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'UPDATE_ACC(acc,val)=${update-acc}' -D'ACC_TYPE=${acc-type}'"/>
             <arg line="-DNO_NATIVE" if:set="no-native"/>
             <arg line="-"/>
         </exec>
@@ -36,7 +36,7 @@ execute a build.
         failonerror="true"
         input="${unsafe-dir}/templates/Put.java.template"
         output="${unsafe-dir}/PutConst${type-mode}Bench.java">
-            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -DCONST"/>
+            <arg line="-E -CC -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -DCONST"/>
             <arg line="-DNO_NATIVE" if:set="no-native"/>
             <arg line="-"/>
         </exec>
@@ -44,7 +44,7 @@ execute a build.
         failonerror="true"
         input="${unsafe-dir}/templates/Put.java.template"
         output="${unsafe-dir}/PutVar${type-mode}Bench.java">
-            <arg line="-E -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -D'UPDATE_VAL(val)=${update-val}'"/>
+            <arg line="-E -CC -P -D'TYPE=${type}' -D'TYPEMODE=${type-mode}' -D'INIT=${init}' -D'UPDATE_VAL(val)=${update-val}'"/>
             <arg line="-DNO_NATIVE" if:set="no-native"/>
             <arg line="-"/>
         </exec>

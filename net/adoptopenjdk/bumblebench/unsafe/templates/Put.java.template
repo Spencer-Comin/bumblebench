@@ -76,9 +76,7 @@ public class NAME {
                 toggle = !toggle;
                 UPDATE_VAL(v);
 
-                System.out.printf("From Java: About to write a %s to 0x%x\n", TYPE.class.getSimpleName(), o);
                 u.OP(null, o, v);
-                System.out.printf("From Java: Wrote a %s from 0x%x\n", TYPE.class.getSimpleName(), o);
             }
 
             return i;
