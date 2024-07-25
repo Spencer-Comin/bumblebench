@@ -70,9 +70,7 @@ public class NAME {
                 }
                 toggle = !toggle;
 
-                System.out.printf("From Java: About to read a %s from 0x%x\n", TYPE.class.getSimpleName(), o);
                 TYPE val = u.OP(null, o);
-                System.out.printf("From Java: Read a %s from 0x%x\n", TYPE.class.getSimpleName(), o);
                 UPDATE_ACC(acc, val);
             }
 
