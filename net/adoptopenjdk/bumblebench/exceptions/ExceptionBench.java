@@ -15,6 +15,7 @@
 package net.adoptopenjdk.bumblebench.exceptions;
 
 import net.adoptopenjdk.bumblebench.core.MicroBench;
+import java.lang.Character;
 
 public class ExceptionBench {
     private static volatile long counter;
@@ -66,7 +67,7 @@ public class ExceptionBench {
     public static class AIOOBE extends MicroBench {
         public static volatile long total;
         public static int[] arr = new int[0];
-        public static volatile Exception dump;
+        public static volatile Exception[] dump = new Exception[Character.MAX_VALUE+1];
 
         protected long doBatch(long numIterations) {
             counter = 0;
@@ -76,7 +77,7 @@ public class ExceptionBench {
                     total += arr[(int) i];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     counter++;
-                    dump = e;
+                    dump[(char) i] = e;
                 }
             }
 
