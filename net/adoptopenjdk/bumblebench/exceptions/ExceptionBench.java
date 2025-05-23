@@ -66,7 +66,7 @@ public class ExceptionBench {
     public static class AIOOBE extends MicroBench {
         public static volatile long total;
         public static int[] arr = new int[0];
-        public static volatile int dump = 0;
+        public static volatile Exception dump;
 
         protected long doBatch(long numIterations) {
             counter = 0;
@@ -76,7 +76,7 @@ public class ExceptionBench {
                     total += arr[(int) i];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     counter++;
-                    dump += e.hashCode();
+                    dump = e;
                 }
             }
 
