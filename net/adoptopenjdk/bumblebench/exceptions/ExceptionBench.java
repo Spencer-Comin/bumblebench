@@ -23,7 +23,7 @@ public class ExceptionBench {
         protected long doBatch(long numIterations) {
             counter = 0;
 
-            for(long i = 0; i < numIterations; i++) {
+            for (long i = 0; i < numIterations; i++) {
                 try {
                     throw new Exception("This is an exception");
                 } catch (Exception e) {
@@ -51,7 +51,7 @@ public class ExceptionBench {
         protected long doBatch(long numIterations) {
             counter = 0;
 
-            for(long i = 0; i < numIterations; i++) {
+            for (long i = 0; i < numIterations; i++) {
                 try {
                     throw e;
                 } catch (Exception e) {
@@ -66,15 +66,17 @@ public class ExceptionBench {
     public static class AIOOBE extends MicroBench {
         public static volatile long total;
         public static int[] arr = new int[0];
+        public static volatile int dump = 0;
 
         protected long doBatch(long numIterations) {
             counter = 0;
 
-            for(int i = 0; i < numIterations; i++) {
+            for (long i = 0; i < numIterations; i++) {
                 try {
-                    total += arr[i];
+                    total += arr[(int) i];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     counter++;
+                    dump += e.hashCode();
                 }
             }
 
